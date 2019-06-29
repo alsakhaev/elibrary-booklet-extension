@@ -19,7 +19,7 @@
   "content_scripts": [
     {
       "matches": [
-        "*://elibrary.ru/*"
+        "*://elibrary.ru/itembox_items.asp?id=*"
       ],
       "js": [
       	"inpage.js"
