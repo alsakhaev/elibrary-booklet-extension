@@ -47,15 +47,15 @@ async function createBooklet() {
 
 type Ref = {
     id: string,
-    main: RefMain,
-    details: RefDetail
+    main?: RefMain,
+    details?: RefDetail
 }
 
 type RefMain = {
     id: string, 
-    title: string, 
-    authors: string, 
-    desc: string
+    title?: string, 
+    authors?: string, 
+    desc?: string
 }
 
 async function generateBooklet(refs: Ref[]) {
