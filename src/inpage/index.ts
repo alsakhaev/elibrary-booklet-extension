@@ -1,5 +1,7 @@
 import * as cheerio from 'cheerio';
 import * as _ from 'lodash';
+import { saveAs } from 'file-saver';
+import * as docx from 'docx';
 
 const actionsPanel = document.querySelector('#thepage > table > tbody > tr > td > table > tbody > tr > td:nth-child(4) > table > tbody');
 const createBookletHtml =
@@ -26,11 +28,11 @@ async function createBooklet() {
 
     setLinkDisabled(true);
     setLinkLoading(true);
-    
+
     const mainPublications = await parseCollection();
     const detailPublications = await Promise.all(mainPublications.map(p => parseById(p.id)));
 
-    const merged = mainPublications.map(p => ({ 
+    const merged : Ref[] = mainPublications.map(p => ({
         id: p.id,
         main: p,
         details: detailPublications.find(ep => ep.id == p.id)
@@ -40,6 +42,37 @@ async function createBooklet() {
     setLinkLoading(false);
 
     console.log(merged);
+    await generateBooklet(merged);
+}
+
+type Ref = {
+    id: string,
+    main: RefMain,
+    details: RefDetail
+}
+
+type RefMain = {
+    id: string, 
+    title: string, 
+    authors: string, 
+    desc: string
+}
+
+async function generateBooklet(refs: Ref[]) {
+
+    // Create document
+    const doc = new docx.Document();
+
+    for (const ref of refs) {
+        const paragraph = new docx.Paragraph(ref.main.authors);
+        doc.addParagraph(paragraph);
+    }
+
+    const packer = new docx.Packer();
+    const buf = await packer.toBuffer(doc);
+    const blob = new Blob([new Uint8Array(buf)]);
+
+    saveAs(blob, "booklet.docx");
 }
 
 function setLinkDisabled(value: boolean) {
@@ -60,7 +93,7 @@ function setLinkLoading(value: boolean) {
     }
 }
 
-async function parseCollection() {
+async function parseCollection() : Promise<RefMain[]> {
     const publicationTds = document.querySelectorAll('#restab tr[id] td[align=left]');
     const publications = [];
 
@@ -76,7 +109,24 @@ async function parseCollection() {
     return publications;
 }
 
-async function parseById(id: string) {
+
+
+type RefDetail = {
+    id: string,
+    authors?: string[],
+    title?: string,
+    pages?: string,
+    issue?: string,
+    year?: string,
+    tom?: string,
+    conf?: string,
+    source?: string,
+    journal?: string,
+    keywords?: string[],
+    abstract?: string
+}
+
+async function parseById(id: string) : Promise<RefDetail> {
     const response = await fetch("https://elibrary.ru/item.asp?id=" + id);
     if (!response.ok) {
         throw new Error("Ошибка загрузки статьи ИД " + id);
@@ -87,7 +137,7 @@ async function parseById(id: string) {
     let $ = cheerio.load(body);
 
     // parse article title
-    var content : any = {
+    var content: RefDetail = {
         id: id,
         authors: [],
         title: $("title").text()
@@ -108,7 +158,7 @@ async function parseById(id: string) {
     // parse authors list
     $("span[style='white-space: nowrap'] b").each(function (index, element) {
         var title = $(element).text();
-        var author : any = { title: title };
+        var author: any = { title: title };
         var authorElements = title.split(/\s+|\./);
         author.lastName = authorElements[0]
             .split("-")

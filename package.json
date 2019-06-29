@@ -11,6 +11,7 @@
   "devDependencies": {
     "@types/cheerio": "^0.22.11",
     "@types/chrome": "^0.0.83",
+    "@types/file-saver": "^2.0.1",
     "@types/lodash": "^4.14.135",
     "@types/react": "^16.8.14",
     "@types/react-dom": "^16.8.4",
@@ -34,6 +35,8 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "chrome-extension-message-wrapper": "^1.0.3",
+    "docx": "^5.0.0-rc4",
+    "file-saver": "^2.0.2",
     "lodash": "^4.17.11",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
