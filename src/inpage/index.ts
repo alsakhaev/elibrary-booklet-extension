@@ -2,27 +2,32 @@ import * as cheerio from 'cheerio';
 import * as _ from 'lodash';
 import { saveAs } from 'file-saver';
 import * as docx from 'docx';
+import { Ref, RefMain, RefDetail } from './types';
 
-const actionsPanel = document.querySelector('#thepage > table > tbody > tr > td > table > tbody > tr > td:nth-child(4) > table > tbody');
-const createBookletHtml =
-    `<tr class="ext-booklet">
-        <td width="15%" align="right" valign="top">
-            <a href="#" id="createBookletIcon">
-                <img src="images/but_orange.gif" width="15" height="15" hspace="3" border="0">
-            </a>
-        </td>
-        <td width="85%" align="left" valign="middle">
-            <a href="#" id="createBookletLabel">Создать буклет</a>
-        </td>
-    </tr>`;
+injectControls();
 
-actionsPanel.innerHTML = actionsPanel.innerHTML + createBookletHtml;
-
-const createBookletIcon = document.getElementById('createBookletIcon');
-const createBookletLabel = document.getElementById('createBookletLabel');
-
-createBookletIcon.onclick = () => createBooklet();
-createBookletLabel.onclick = () => createBooklet();
+function injectControls() {
+    const actionsPanel = document.querySelector('#thepage > table > tbody > tr > td > table > tbody > tr > td:nth-child(4) > table > tbody');
+    const createBookletHtml =
+        `<tr class="ext-booklet">
+            <td width="15%" align="right" valign="top">
+                <a href="#" id="createBookletIcon">
+                    <img src="images/but_orange.gif" width="15" height="15" hspace="3" border="0">
+                </a>
+            </td>
+            <td width="85%" align="left" valign="middle">
+                <a href="#" id="createBookletLabel">Создать буклет</a>
+            </td>
+        </tr>`;
+    
+    actionsPanel.innerHTML = actionsPanel.innerHTML + createBookletHtml;
+    
+    const createBookletIcon = document.getElementById('createBookletIcon');
+    const createBookletLabel = document.getElementById('createBookletLabel');
+    
+    createBookletIcon.onclick = () => createBooklet();
+    createBookletLabel.onclick = () => createBooklet();
+}
 
 async function createBooklet() {
 
@@ -45,19 +50,6 @@ async function createBooklet() {
     await generateBooklet(merged);
 }
 
-type Ref = {
-    id: string,
-    main?: RefMain,
-    details?: RefDetail
-}
-
-type RefMain = {
-    id: string, 
-    title?: string, 
-    authors?: string, 
-    desc?: string
-}
-
 async function generateBooklet(refs: Ref[]) {
 
     // Create document
@@ -76,6 +68,9 @@ async function generateBooklet(refs: Ref[]) {
 }
 
 function setLinkDisabled(value: boolean) {
+    const createBookletIcon = document.getElementById('createBookletIcon');
+    const createBookletLabel = document.getElementById('createBookletLabel');
+
     if (value) {
         createBookletIcon.classList.add('disabled');
         createBookletLabel.classList.add('disabled');
@@ -86,6 +81,7 @@ function setLinkDisabled(value: boolean) {
 }
 
 function setLinkLoading(value: boolean) {
+    const createBookletIcon = document.getElementById('createBookletIcon');
     if (value) {
         createBookletIcon.querySelector('img').src = chrome.extension.getURL('loadingSpinner.gif');
     } else {
@@ -107,23 +103,6 @@ async function parseCollection() : Promise<RefMain[]> {
     });
 
     return publications;
-}
-
-
-
-type RefDetail = {
-    id: string,
-    authors?: string[],
-    title?: string,
-    pages?: string,
-    issue?: string,
-    year?: string,
-    tom?: string,
-    conf?: string,
-    source?: string,
-    journal?: string,
-    keywords?: string[],
-    abstract?: string
 }
 
 async function parseById(id: string) : Promise<RefDetail> {
