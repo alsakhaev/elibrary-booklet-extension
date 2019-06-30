@@ -21,6 +21,7 @@ export function injectButton(label: string) {
     const result = {
         setLinkDisabled,
         setLinkLoading,
+        setLabel,
         onclick: null
     };
     
@@ -29,6 +30,7 @@ export function injectButton(label: string) {
 
     return result;
 }
+
 
 export function setLinkDisabled(value: boolean) {
     const createBookletIcon = document.getElementById('createBookletIcon');
@@ -50,4 +52,9 @@ function setLinkLoading(value: boolean) {
     } else {
         createBookletIcon.querySelector('img').src = "images/but_orange.gif"
     }
+}
+
+function setLabel(value: string) {
+    const createBookletLabel = document.getElementById('createBookletLabel');
+    createBookletLabel.innerText = value;
 }
