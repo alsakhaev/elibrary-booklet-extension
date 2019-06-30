@@ -1,10 +1,10 @@
 
 import { Ref, RefMain, RefDetail } from './types';
 import { parseCollection, parseById } from './parser';
-import { injectControls } from './injector';
+import { injectButton } from './injector';
 import { generateBooklet } from './booklet';
 
-const bookletButton = injectControls();
+const bookletButton = injectButton('Создать буклет');
 bookletButton.onclick = () => createBooklet();
 
 async function createBooklet() {

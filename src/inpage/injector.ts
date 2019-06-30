@@ -1,5 +1,6 @@
-export function injectControls() {
+export function injectButton(label: string) {
     const actionsPanel = document.querySelector('#thepage > table > tbody > tr > td > table > tbody > tr > td:nth-child(4) > table > tbody');
+    // ToDo: remove id and replace plaintext HTML to js objects
     const createBookletHtml =
         `<tr class="ext-booklet">
             <td width="15%" align="right" valign="top">
@@ -8,10 +9,10 @@ export function injectControls() {
                 </a>
             </td>
             <td width="85%" align="left" valign="middle">
-                <a href="#" id="createBookletLabel">Создать буклет</a>
+                <a href="#" id="createBookletLabel">${label}</a>
             </td>
         </tr>`;
-    
+
     actionsPanel.innerHTML = actionsPanel.innerHTML + createBookletHtml;
     
     const createBookletIcon = document.getElementById('createBookletIcon');
