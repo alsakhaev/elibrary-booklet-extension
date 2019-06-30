@@ -20,24 +20,24 @@ export async function generateBooklet(refs: Ref[]) {
 
         // Ключевые слова
 
-        // const keywordsTitleRun = new docx.TextRun('Ключевые слова: ');
-        // keywordsTitleRun.bold();
-        // keywordsTitleRun.italics();
+        const keywordsTitleRun = new docx.TextRun('Ключевые слова: ');
+        keywordsTitleRun.bold();
+        keywordsTitleRun.italics();
 
-        // const keywordsRun = new docx.TextRun(ref.details.keywords.join(', '));
-        // keywordsRun.italics();
+        const keywordsRun = new docx.TextRun(ref.details.keywords.join(', '));
+        keywordsRun.italics();
 
-        // const keywordsParagraph = new docx.Paragraph();
-        // keywordsParagraph.addRun(keywordsTitleRun);
-        // keywordsParagraph.addRun(keywordsRun);
+        const keywordsParagraph = new docx.Paragraph();
+        keywordsParagraph.addRun(keywordsTitleRun);
+        keywordsParagraph.addRun(keywordsRun);
 
         // Реферат
         
-        // const abstractRun = new docx.TextRun(ref.details.abstract);
-        // abstractRun.italics();
+        const abstractRun = new docx.TextRun(ref.details.abstract);
+        abstractRun.italics();
 
-        // const abstractParagraph = new docx.Paragraph();
-        // abstractParagraph.addRun(abstractRun);
+        const abstractParagraph = new docx.Paragraph();
+        abstractParagraph.addRun(abstractRun);
 
         // Разделитель
 
@@ -46,8 +46,8 @@ export async function generateBooklet(refs: Ref[]) {
         
         doc.addParagraph(authorsParagraph);
         doc.addParagraph(titleParagraph);
-        //doc.addParagraph(keywordsParagraph);
-        //doc.addParagraph(abstractParagraph);
+        doc.addParagraph(keywordsParagraph);
+        doc.addParagraph(abstractParagraph);
         doc.addParagraph(thematicParagraph);
     }
 
