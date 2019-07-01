@@ -9,45 +9,50 @@ export async function generateBooklet(refs: Ref[]) {
     const doc = new docx.Document();
 
     for (const ref of refs) {
-        const authorsRun = new docx.TextRun(ref.main.authors);
-        authorsRun.bold();
+        if (ref.main.authors) {
+            const authorsRun = new docx.TextRun(ref.main.authors);
+            authorsRun.bold();
 
-        const authorsParagraph = new docx.Paragraph();
-        authorsParagraph.addRun(authorsRun);
+            const authorsParagraph = new docx.Paragraph();
+            authorsParagraph.addRun(authorsRun);
+            doc.addParagraph(authorsParagraph);
+        }
 
-        const titleText = ref.main.title + ' / ' + ref.main.authors + ' // ' + ref.main.desc;
-        const titleParagraph = new docx.Paragraph(titleText);
+        if (ref.main.title || ref.main.authors || ref.main.desc) {
+            const titleText = ref.main.title + ' / ' + ref.main.authors + ' // ' + ref.main.desc;
+            const titleParagraph = new docx.Paragraph(titleText);
+            doc.addParagraph(titleParagraph);
+        }
 
         // Ключевые слова
+        if (ref.details && ref.details.keywords && ref.details.keywords.length > 0) {
+            const keywordsTitleRun = new docx.TextRun('Ключевые слова: ');
+            keywordsTitleRun.bold();
+            keywordsTitleRun.italics();
 
-        const keywordsTitleRun = new docx.TextRun('Ключевые слова: ');
-        keywordsTitleRun.bold();
-        keywordsTitleRun.italics();
+            // ToDo: fix undefined error
+            const keywordsRun = new docx.TextRun(ref.details.keywords.join(', '));
+            keywordsRun.italics();
 
-        const keywordsRun = new docx.TextRun(ref.details.keywords.join(', '));
-        keywordsRun.italics();
-
-        const keywordsParagraph = new docx.Paragraph();
-        keywordsParagraph.addRun(keywordsTitleRun);
-        keywordsParagraph.addRun(keywordsRun);
+            const keywordsParagraph = new docx.Paragraph();
+            keywordsParagraph.addRun(keywordsTitleRun);
+            keywordsParagraph.addRun(keywordsRun);
+            doc.addParagraph(keywordsParagraph);
+        }
 
         // Реферат
-        
-        const abstractRun = new docx.TextRun(ref.details.abstract);
-        abstractRun.italics();
+        if (ref.details && ref.details.abstract) {
+            const abstractRun = new docx.TextRun(ref.details.abstract);
+            abstractRun.italics();
 
-        const abstractParagraph = new docx.Paragraph();
-        abstractParagraph.addRun(abstractRun);
+            const abstractParagraph = new docx.Paragraph();
+            abstractParagraph.addRun(abstractRun);
+            doc.addParagraph(abstractParagraph);
+        }
 
         // Разделитель
-
         const thematicParagraph = new docx.Paragraph();
         thematicParagraph.thematicBreak();
-        
-        doc.addParagraph(authorsParagraph);
-        doc.addParagraph(titleParagraph);
-        doc.addParagraph(keywordsParagraph);
-        doc.addParagraph(abstractParagraph);
         doc.addParagraph(thematicParagraph);
     }
 
