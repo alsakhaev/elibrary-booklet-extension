@@ -37,7 +37,7 @@
     "chrome-extension-message-wrapper": "^1.0.3",
     "docx": "^5.0.0-rc4",
     "file-saver": "^2.0.2",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "semantic-ui-css": "^2.4.1",
